@@ -34,7 +34,7 @@ angular.module('ngCordova.plugins.sqlite', [])
         return q.promise;
       },
 
-      batch: function (db, queries, binding) {
+      batch: function (db, queries) {
         var q = $q.defer();
         db.sqlBatch(queries, function () {
           q.resolve();
