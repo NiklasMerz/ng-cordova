@@ -1,6 +1,6 @@
 /*!
  * ngCordova
- * v0.1.27-alpha
+ * Custom
  * Copyright 2015 Drifty Co. http://drifty.com/
  * See LICENSE in this repository for license information
  */
@@ -15,11 +15,11 @@ angular.module('ngCordova', [
 
 angular.module('ngCordova.plugins.3dtouch', [])
 
-    .factory('$cordova3DTouch', ['$q', function($q) {
+    .factory('$cordova3DTouch', ['$q', function ($q) {
         var quickActions = [];
         var quickActionHandler = {};
 
-        var createQuickActionHandler = function(quickActionHandler) {
+        var createQuickActionHandler = function (quickActionHandler) {
             return function (payload) {
                 for (var key in quickActionHandler) {
                     if (payload.type === key) {
@@ -64,7 +64,7 @@ angular.module('ngCordova.plugins.3dtouch', [])
              * @param    function callback (optional)
              * @return   promise
              */
-            addQuickAction: function(type, title, iconType, iconTemplate, subtitle, callback) {
+            addQuickAction: function (type, title, iconType, iconTemplate, subtitle, callback) {
                 var deferred = $q.defer();
 
                 var quickAction = {
@@ -81,14 +81,14 @@ angular.module('ngCordova.plugins.3dtouch', [])
                     quickAction.iconTemplate = iconTemplate;
                 }
 
-                this.isAvailable().then(function() {
+                this.isAvailable().then(function () {
                     quickActions.push(quickAction);
                     quickActionHandler[type] = callback;
                     window.ThreeDeeTouch.configureQuickActions(quickActions);
                     window.ThreeDeeTouch.onHomeIconPressed = createQuickActionHandler(quickActionHandler);
                     deferred.resolve(quickActions);
                 },
-                function(err) {
+                function (err) {
                     deferred.reject(err);
                 });
 
@@ -102,15 +102,15 @@ angular.module('ngCordova.plugins.3dtouch', [])
              * @param    function callback
              * @return   promise
              */
-            addQuickActionHandler: function(type, callback) {
+            addQuickActionHandler: function (type, callback) {
                 var deferred = $q.defer();
 
-                this.isAvailable().then(function() {
+                this.isAvailable().then(function () {
                     quickActionHandler[type] = callback;
                     window.ThreeDeeTouch.onHomeIconPressed = createQuickActionHandler(quickActionHandler);
                     deferred.resolve(true);
                 },
-                function(err) {
+                function (err) {
                     deferred.reject(err);
                 });
 
@@ -122,14 +122,14 @@ angular.module('ngCordova.plugins.3dtouch', [])
              *
              * @return   bool
              */
-            enableLinkPreview: function() {
+            enableLinkPreview: function () {
                 var deferred = $q.defer();
 
-                this.isAvailable().then(function() {
+                this.isAvailable().then(function () {
                     window.ThreeDeeTouch.enableLinkPreview();
                         deferred.resolve(true);
                 },
-                function(err) {
+                function (err) {
                     deferred.reject(err);
                 });
 
@@ -142,14 +142,14 @@ angular.module('ngCordova.plugins.3dtouch', [])
              * @param    function callback
              * @return   promise
              */
-            addForceTouchHandler: function(callback) {
+            addForceTouchHandler: function (callback) {
                 var deferred = $q.defer();
 
-                this.isAvailable().then(function() {
+                this.isAvailable().then(function () {
                     window.ThreeDeeTouch.watchForceTouches(callback);
                     deferred.resolve(true);
                 },
-                function(err) {
+                function (err) {
                     deferred.reject(err);
                 });
 
@@ -1310,7 +1310,7 @@ angular.module('ngCordova.plugins.brightness', [])
 angular.module('ngCordova.plugins.calendar', [])
 
   .factory('$cordovaCalendar', ['$q', '$window', function ($q, $window) {
-    
+
     return {
       createCalendar: function (options) {
         var d = $q.defer(),
@@ -1924,7 +1924,7 @@ angular.module('ngCordova.plugins.contacts', [])
 angular.module('ngCordova.plugins.datePicker', [])
 
   .factory('$cordovaDatePicker', ['$window', '$q', function ($window, $q) {
-    
+
     return {
       show: function (options) {
         var q = $q.defer();
@@ -2089,7 +2089,7 @@ angular.module('ngCordova.plugins.deviceOrientation', [])
     var defaultOptions = {
       frequency: 3000 // every 3s
     };
-    
+
     return {
       getCurrentHeading: function () {
         var q = $q.defer();
@@ -2214,7 +2214,7 @@ angular.module('ngCordova.plugins.dialogs', [])
         } else {
           q.reject(message, title);
         }
-      
+
         return q.promise;
       },
 
@@ -2227,7 +2227,7 @@ angular.module('ngCordova.plugins.dialogs', [])
         } else {
           q.reject();
         }
-      
+
         return q.promise;
       },
 
@@ -2240,7 +2240,7 @@ angular.module('ngCordova.plugins.dialogs', [])
         } else {
           q.reject(message, title);
         }
-      
+
         return q.promise;
       },
 
@@ -2253,7 +2253,7 @@ angular.module('ngCordova.plugins.dialogs', [])
         } else {
           q.reject();
         }
-      
+
         return q.promise;
       },
 
@@ -2266,7 +2266,7 @@ angular.module('ngCordova.plugins.dialogs', [])
         } else {
           q.reject(value);
         }
-      
+
         return q.promise;
       }
     };
@@ -3322,6 +3322,48 @@ angular.module('ngCordova.plugins.fileTransfer', [])
     };
   }]);
 
+// install   :      cordova plugin add https://github.com/NiklasMerz/cordova-plugin-fingerprint-aio
+// link      :      https://github.com/NiklasMerz/cordova-plugin-fingerprint-aio
+
+/* globals fingerprint: true */
+angular.module('ngCordova.plugins.fingerprint', [])
+
+  .factory('$cordovaFingerprint', ['$q', function ($q) {
+
+    return {
+      isAvailable: function () {
+        var defer = $q.defer();
+        if (!window.cordova) {
+          defer.reject('Not supported without cordova.js');
+        } else {
+          fingerprint.isAvailable(function (value) {
+            defer.resolve(value);
+          }, function (err) {
+            defer.reject(err);
+          });
+        }
+
+        return defer.promise;
+      },
+
+      show: function (options) {
+        var defer = $q.defer();
+        if (!window.cordova) {
+          defer.reject('Not supported without cordova.js');
+        } else {
+          fingerprint.show(options,
+          function (value) {
+            defer.resolve(value);
+          }, function (err) {
+            defer.reject(err);
+          });
+        }
+
+        return defer.promise;
+      }
+    };
+  }]);
+
 // install   :     cordova plugin add https://github.com/EddyVerbruggen/Flashlight-PhoneGap-Plugin.git
 // link      :     https://github.com/EddyVerbruggen/Flashlight-PhoneGap-Plugin
 
@@ -4251,7 +4293,7 @@ angular.module('ngCordova.plugins.googlePlus', [])
             q.reject(available);
           }
         });
-        
+
         return q.promise;
       }
     };
@@ -6030,9 +6072,9 @@ angular.module('ngCordova.plugins.preferences', [])
   .factory('$cordovaPreferences', ['$window', '$q', function ($window, $q) {
 
      return {
-         
+
          pluginNotEnabledMessage: 'Plugin not enabled',
-    	
+
     	/**
     	 * Decorate the promise object.
     	 * @param promise The promise object.
@@ -6048,7 +6090,7 @@ angular.module('ngCordova.plugins.preferences', [])
 	            return promise;
 	        };
     	},
-    	
+
     	/**
     	 * Store the value of the given dictionary and key.
     	 * @param key The key of the preference.
@@ -6059,15 +6101,15 @@ angular.module('ngCordova.plugins.preferences', [])
 	    store: function (key, value, dict) {
 	    	var deferred = $q.defer();
 	    	var promise = deferred.promise;
-            
+
             function ok(value){
                 deferred.resolve(value);
             }
-            
+
             function errorCallback(error){
                 deferred.reject(new Error(error));
             }
-            
+
             if($window.plugins){
                 var storeResult;
                 if(arguments.length === 3){
@@ -6075,16 +6117,16 @@ angular.module('ngCordova.plugins.preferences', [])
                 } else {
                     storeResult = $window.plugins.appPreferences.store(key, value);
                 }
-                
+
                 storeResult.then(ok, errorCallback);
             } else {
                 deferred.reject(new Error(this.pluginNotEnabledMessage));
             }
-            
+
 	    	this.decoratePromise(promise);
 	    	return promise;
 	    },
-	    
+
 	    /**
 	     * Fetch the value by the given dictionary and key.
 	     * @param key The key of the preference to retrieve.
@@ -6094,15 +6136,15 @@ angular.module('ngCordova.plugins.preferences', [])
 	    fetch: function (key, dict) {
 	    	var deferred = $q.defer();
 	    	var promise = deferred.promise;
-            
+
             function ok(value){
                 deferred.resolve(value);
             }
-            
+
             function errorCallback(error){
                 deferred.reject(new Error(error));
             }
-            
+
             if($window.plugins){
                 var fetchResult;
                 if(arguments.length === 2){
@@ -6114,11 +6156,11 @@ angular.module('ngCordova.plugins.preferences', [])
             } else {
                 deferred.reject(new Error(this.pluginNotEnabledMessage));
             }
-            
+
 	    	this.decoratePromise(promise);
 	    	return promise;
 	    },
-        
+
         /**
 	     * Remove the value by the given key.
 	     * @param key The key of the preference to retrieve.
@@ -6128,15 +6170,15 @@ angular.module('ngCordova.plugins.preferences', [])
 	    remove: function (key, dict) {
 	    	var deferred = $q.defer();
 	    	var promise = deferred.promise;
-            
+
             function ok(value){
                 deferred.resolve(value);
             }
-            
+
             function errorCallback(error){
                 deferred.reject(new Error(error));
             }
-            
+
             if($window.plugins){
                 var removeResult;
                 if(arguments.length === 2){
@@ -6148,11 +6190,11 @@ angular.module('ngCordova.plugins.preferences', [])
             } else {
                 deferred.reject(new Error(this.pluginNotEnabledMessage));
             }
-	    	
+
 	    	this.decoratePromise(promise);
 	    	return promise;
 	    },
-        
+
         /**
 	     * Show the application preferences.
          * @returns Returns a promise.
@@ -6160,22 +6202,22 @@ angular.module('ngCordova.plugins.preferences', [])
 	    show: function () {
 	    	var deferred = $q.defer();
 	    	var promise = deferred.promise;
-            
+
             function ok(value){
                 deferred.resolve(value);
             }
-            
+
             function errorCallback(error){
                 deferred.reject(new Error(error));
             }
-            
+
             if($window.plugins){
                 $window.plugins.appPreferences.show()
                     .then(ok, errorCallback);
             } else {
                 deferred.reject(new Error(this.pluginNotEnabledMessage));
             }
-	    	
+
 	    	this.decoratePromise(promise);
 	    	return promise;
 	    }
@@ -6556,7 +6598,7 @@ angular.module('ngCordova.plugins.serial', [])
       return q.promise;
     };
 
-    serialService.open = function(options) {
+    serialService.open = function (options) {
       var q = $q.defer();
 
       serial.open(options, function success() {
@@ -6568,7 +6610,7 @@ angular.module('ngCordova.plugins.serial', [])
       return q.promise;
     };
 
-    serialService.write = function(data) {
+    serialService.write = function (data) {
       var q = $q.defer();
 
       serial.write(data, function success() {
@@ -6580,7 +6622,7 @@ angular.module('ngCordova.plugins.serial', [])
       return q.promise;
     };
 
-    serialService.writeHex = function(data) {
+    serialService.writeHex = function (data) {
       var q = $q.defer();
 
       serial.writeHex(data, function success() {
@@ -6592,7 +6634,7 @@ angular.module('ngCordova.plugins.serial', [])
       return q.promise;
     };
 
-    serialService.read = function() {
+    serialService.read = function () {
       var q = $q.defer();
 
       serial.read(function success(buffer) {
@@ -6605,14 +6647,14 @@ angular.module('ngCordova.plugins.serial', [])
       return q.promise;
     };
 
-    serialService.registerReadCallback = function(successCallback, errorCallback) {
+    serialService.registerReadCallback = function (successCallback, errorCallback) {
       serial.registerReadCallback(function success(buffer) {
         var view = new Uint8Array(buffer);
         successCallback(view);
       }, errorCallback);
     };
 
-    serialService.close = function() {
+    serialService.close = function () {
       var q = $q.defer();
 
       serial.close(function success() {
