@@ -3336,7 +3336,7 @@ angular.module('ngCordova.plugins.fingerprint', [])
         if (!window.cordova) {
           defer.reject('Not supported without cordova.js');
         } else {
-          fingerprint.isAvailable(function (value) {
+          Fingerprint.isAvailable(function (value) {
             defer.resolve(value);
           }, function (err) {
             defer.reject(err);
@@ -3351,7 +3351,7 @@ angular.module('ngCordova.plugins.fingerprint', [])
         if (!window.cordova) {
           defer.reject('Not supported without cordova.js');
         } else {
-          fingerprint.show(options,
+          Fingerprint.show(options,
           function (value) {
             defer.resolve(value);
           }, function (err) {
