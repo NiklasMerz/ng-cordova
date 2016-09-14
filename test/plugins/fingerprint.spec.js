@@ -28,7 +28,7 @@ describe('Service: $cordovaFingerprint', function() {
       });
     $rootScope.$digest();
     expect(result).toBe(true);
-    expect(window.fingerprint.isAvailable).toHaveBeenCalledWith(
+    expect(window.Fingerprint.isAvailable).toHaveBeenCalledWith(
       jasmine.any(Function),
       jasmine.any(Function)
     );
@@ -87,7 +87,7 @@ describe('Service: $cordovaFingerprint', function() {
       });
     $rootScope.$digest();
     expect(result).toBe(true);
-    expect(window.fingerprint.show).toHaveBeenCalledWith(
+    expect(window.Fingerprint.show).toHaveBeenCalledWith(
       options,
       jasmine.any(Function),
       jasmine.any(Function)
